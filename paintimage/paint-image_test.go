@@ -11,13 +11,13 @@ func TestReadConfigFile(t *testing.T) {
 		name         string
 		path         string
 		wantErr      bool
-		wantedConfig ConfigFile
+		wantedConfig PaintConfig
 	}{
 		{
 			name:    "valid_file_path",
 			path:    "./config_test.json",
 			wantErr: false,
-			wantedConfig: ConfigFile{
+			wantedConfig: PaintConfig{
 				Template: "yeezy-outilined.png",
 				Masks:    []string{"mask1.png", "mask2.png", "mask3.png"},
 			},
