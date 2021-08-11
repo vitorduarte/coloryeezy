@@ -1,4 +1,10 @@
 {
-    "template": "img/yeezy-outlined.png",
-    "masks": ["img/mask1.png", "img/mask2.png", "img/mask3.png"]
+    "template": "img/template.png",
+    "masks": [
+        { "path": "img/mask1.png", "color": "random" },
+        { "path": "img/mask2.png", "color": "random" },
+        { "path": "img/mask3.png", "color": "random" },
+        { "path": "img/mask4.png", "color": "random" },
+        { "path": "img/outlines.png", "color": "#000" }
+    ]
 }

@@ -17,15 +17,19 @@ type Painter struct {
 	Config PaintConfig
 }
 
+type MaskConfig struct {
+	Path  string `json:"path"`
+	Color string `json:"color"`
+}
 type PaintConfig struct {
-	Template string   `json:"template"`
-	Masks    []string `json:"masks"`
+	Template string       `json:"template"`
+	Masks    []MaskConfig `json:"masks"`
 }
 
 func NewPainter(configPath string) (p Painter, err error) {
 	config, err := ReadConfigFile(configPath)
 	if err != nil {
-		fmt.Println(err)
+		return
 	}
 
 	return Painter{Config: config}, nil
@@ -47,24 +51,35 @@ func ReadConfigFile(path string) (config PaintConfig, err error) {
 	return
 }
 
-func (p *Painter) Paint(outputPath string) {
+func (p *Painter) Paint(outputPath string) (err error) {
 	rand.Seed(time.Now().UnixNano())
 	canva, err := openTemplateImage(p.Config.Template)
 	if err != nil {
-		fmt.Println("Could not open template image", err)
+		err = fmt.Errorf("Could not open template image: %v", err)
 		return
 	}
 
 	for _, mask := range p.Config.Masks {
-		err = fillImageWithColorWithMask(canva, mask, generateRandomColor())
+		var fill_color color.RGBA
+		if mask.Color == "random" {
+			fill_color = generateRandomColor()
+		} else {
+			fill_color, err = hexToRGBA(mask.Color)
+			if err != nil {
+				err = fmt.Errorf("Could not parse color: %v", err)
+				return
+			}
+		}
+
+		err = fillImageWithColorWithMask(canva, mask.Path, fill_color)
 		if err != nil {
-			fmt.Println("Could not fill image")
+			err = fmt.Errorf("Could not parse color: %v", err)
 			return
 		}
 	}
 
 	saveImage(canva, outputPath)
-
+	return nil
 }
 
 func openTemplateImage(path string) (canva *image.RGBA, err error) {
@@ -93,6 +108,32 @@ func openImage(path string) (image.Image, error) {
 	return img, nil
 }
 
+func generateRandomColor() color.RGBA {
+	return color.RGBA{uint8(rand.Intn(255)), uint8(rand.Intn(255)), uint8(rand.Intn(255)), 255}
+}
+
+func hexToRGBA(hex string) (c color.RGBA, err error) {
+	// Consider alpha to be 255 if it was not specified
+	c.A = 0xff
+
+	switch len(hex) {
+	case 9:
+		_, err = fmt.Sscanf(hex, "#%02x%02x%02x%02x", &c.R, &c.G, &c.B, &c.A)
+	case 7:
+		_, err = fmt.Sscanf(hex, "#%02x%02x%02x", &c.R, &c.G, &c.B)
+	case 4:
+		_, err = fmt.Sscanf(hex, "#%1x%1x%1x", &c.R, &c.G, &c.B)
+		// Double the hex digits:
+		c.R *= 17
+		c.G *= 17
+		c.B *= 17
+	default:
+		err = fmt.Errorf("Invalid hex color: %s", hex)
+	}
+
+	return
+}
+
 func fillImageWithColorWithMask(canva *image.RGBA, maskPath string, color color.RGBA) (err error) {
 	fill := &image.Uniform{color}
 
@@ -103,10 +144,6 @@ func fillImageWithColorWithMask(canva *image.RGBA, maskPath string, color color.
 
 	draw.DrawMask(canva, canva.Bounds(), fill, image.ZP, mask, image.ZP, draw.Over)
 	return
-}
-
-func generateRandomColor() color.RGBA {
-	return color.RGBA{uint8(rand.Intn(255)), uint8(rand.Intn(255)), uint8(rand.Intn(255)), 255}
 }
 
 func saveImage(img image.Image, outputPath string) (err error) {

@@ -1,4 +1,8 @@
 {
     "template": "yeezy-outilined.png",
-    "masks": ["mask1.png", "mask2.png", "mask3.png"]
+    "masks": [
+        { "path": "mask1.png", "color": "random" },
+        { "path": "mask2.png", "color": "random" },
+        { "path": "mask3.png", "color": "random" }
+    ]
 }
