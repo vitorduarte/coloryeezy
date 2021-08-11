@@ -1,0 +1,4 @@
+{
+    "template": "img/yeezy-outlined.png",
+    "masks": ["img/mask1.png", "img/mask2.png", "img/mask3.png"]
+}
