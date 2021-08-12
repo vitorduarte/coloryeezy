@@ -1,31 +1,53 @@
 package main
 
 import (
-	"fmt"
+	"context"
 	"image"
 	"image/color"
+	"log"
 	"time"
 
 	"github.com/vitorduarte/coloryeezy/paintimage"
 )
 
 func main() {
+	ctx := context.Background()
+	delay := time.Second * 5
+	startTime, err := time.Parse(
+		"2006-01-02 15:04:05 -07",
+		"2021-08-12 18:19:00 -03")
+	if err != nil {
+		log.Println(err)
+	}
+
+	for range cron(ctx, startTime, delay) {
+		err := generateNewYeezyImage("./img/output.png")
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println("Created new yeezy")
+	}
+
+}
+
+func generateNewYeezyImage(filename string) (err error) {
 	painter, err := paintimage.NewPainter("config.json")
 	if err != nil {
-		fmt.Println(err)
+		return
 	}
 
 	outImage, err := painter.Paint()
 	if err != nil {
-		fmt.Println(err)
+		return
 	}
 
 	writeTodayDateOnImage(outImage)
 	if err != nil {
-		fmt.Println(err)
+		return
 	}
 
-	paintimage.SaveImage(outImage, "output.png")
+	paintimage.SaveImage(outImage, filename)
+	return
 }
 
 func writeTodayDateOnImage(canva *image.RGBA) (err error) {
