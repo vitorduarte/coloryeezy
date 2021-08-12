@@ -11,6 +11,8 @@ import (
 	"math/rand"
 	"os"
 	"time"
+
+	"github.com/golang/freetype"
 )
 
 type Painter struct {
@@ -26,12 +28,19 @@ type PaintConfig struct {
 	Masks    []MaskConfig `json:"masks"`
 }
 
+type TextConfig struct {
+	FontPath string
+	Text     string
+	Size     float64
+	Color    color.RGBA
+	Location image.Point
+}
+
 func NewPainter(configPath string) (p Painter, err error) {
 	config, err := ReadConfigFile(configPath)
 	if err != nil {
 		return
 	}
-
 	return Painter{Config: config}, nil
 }
 
@@ -51,9 +60,9 @@ func ReadConfigFile(path string) (config PaintConfig, err error) {
 	return
 }
 
-func (p *Painter) Paint(outputPath string) (err error) {
+func (p *Painter) Paint() (canva *image.RGBA, err error) {
 	rand.Seed(time.Now().UnixNano())
-	canva, err := openTemplateImage(p.Config.Template)
+	canva, err = openTemplateImage(p.Config.Template)
 	if err != nil {
 		err = fmt.Errorf("Could not open template image: %v", err)
 		return
@@ -77,9 +86,7 @@ func (p *Painter) Paint(outputPath string) (err error) {
 			return
 		}
 	}
-
-	saveImage(canva, outputPath)
-	return nil
+	return
 }
 
 func openTemplateImage(path string) (canva *image.RGBA, err error) {
@@ -146,7 +153,37 @@ func fillImageWithColorWithMask(canva *image.RGBA, maskPath string, color color.
 	return
 }
 
-func saveImage(img image.Image, outputPath string) (err error) {
+func WriteTextOnImage(canva *image.RGBA, textConfig TextConfig) (err error) {
+	c := freetype.NewContext()
+	fontBytes, err := ioutil.ReadFile(textConfig.FontPath)
+	if err != nil {
+		return
+	}
+
+	font, err := freetype.ParseFont(fontBytes)
+	if err != nil {
+		return
+	}
+
+	// Set configs to freetype
+	c.SetFont(font)
+	c.SetDPI(115)
+	c.SetFontSize(textConfig.Size)
+	c.SetSrc(&image.Uniform{textConfig.Color})
+	c.SetDst(canva)
+	c.SetClip(canva.Bounds())
+
+	// Draw the text
+	pt := freetype.Pt(textConfig.Location.X, textConfig.Location.Y)
+	_, err = c.DrawString(textConfig.Text, pt)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func SaveImage(img image.Image, outputPath string) (err error) {
 	f, err := os.Create(outputPath)
 	if err != nil {
 		return
