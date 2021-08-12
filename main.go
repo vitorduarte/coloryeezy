@@ -11,6 +11,8 @@ import (
 )
 
 func main() {
+	twitterClient := createTwitterClient()
+	outputImagePath := "./img/output.png"
 	ctx := context.Background()
 	delay := time.Second * 5
 	startTime, err := time.Parse(
@@ -21,10 +23,16 @@ func main() {
 	}
 
 	for range cron(ctx, startTime, delay) {
-		err := generateNewYeezyImage("./img/output.png")
+		err := generateNewYeezyImage(outputImagePath)
 		if err != nil {
 			log.Println(err)
 		}
+
+		err = twitterClient.PostImage(outputImagePath, "I'M GENERATING IMAGES BUT I WILL NOT POST YET 👍 ")
+		if err != nil {
+			log.Println(err)
+		}
+
 		log.Println("Created new yeezy")
 	}
 
