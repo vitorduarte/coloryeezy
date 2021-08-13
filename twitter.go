@@ -38,7 +38,7 @@ func (t *TwitterClient) PostImage(imagePath string, text string) (err error) {
 	v := url.Values{}
 	v.Set("media_ids", strconv.FormatInt(mediaResponse.MediaID, 10))
 
-	_, err = t.API.PostTweet("I'M GENERATING IMAGES BUT I WILL NOT POST YET 👍 ", v)
+	_, err = t.API.PostTweet(text, v)
 	if err != nil {
 		return
 	}

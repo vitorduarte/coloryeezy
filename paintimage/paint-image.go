@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"os"
-	"time"
 
 	"github.com/golang/freetype"
 )
@@ -61,7 +60,6 @@ func ReadConfigFile(path string) (config PaintConfig, err error) {
 }
 
 func (p *Painter) Paint() (canva *image.RGBA, err error) {
-	rand.Seed(time.Now().UnixNano())
 	canva, err = openTemplateImage(p.Config.Template)
 	if err != nil {
 		err = fmt.Errorf("Could not open template image: %v", err)
