@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  app:
+    container_name: color-yeezy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    volumes:
+      - ./img:/coloryeezy/img
+      - ./config.json/:/coloryeezy/config.json
+      - ./tweets.txt:/coloryeezy/tweets.txt
