@@ -3,9 +3,7 @@ version: '3'
 services:
   app:
     container_name: color-yeezy
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/vitorduarte/coloryeezy:main
     env_file: .env
     volumes:
       - ./img:/coloryeezy/img
