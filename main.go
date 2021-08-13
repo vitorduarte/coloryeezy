@@ -21,7 +21,7 @@ func main() {
 	delay := time.Hour
 	startTime, err := time.Parse(
 		"2006-01-02 15:04:05 -07",
-		"2021-08-12 18:19:00 -03")
+		"2021-08-13 18:10:00 -03")
 	if err != nil {
 		log.Println(err)
 	}
