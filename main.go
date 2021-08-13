@@ -18,7 +18,7 @@ func main() {
 	twitterClient := createTwitterClient()
 	outputImagePath := "./img/output.png"
 	ctx := context.Background()
-	delay := time.Second * 5
+	delay := time.Hour
 	startTime, err := time.Parse(
 		"2006-01-02 15:04:05 -07",
 		"2021-08-12 18:19:00 -03")
