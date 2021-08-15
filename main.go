@@ -18,13 +18,8 @@ func main() {
 	twitterClient := createTwitterClient()
 	outputImagePath := "./img/output.png"
 	ctx := context.Background()
-	delay := time.Hour
-	startTime, err := time.Parse(
-		"2006-01-02 15:04:05 -07",
-		"2021-08-13 18:10:00 -03")
-	if err != nil {
-		log.Println(err)
-	}
+	delay := time.Second * 5
+	startTime := time.Now().Add(time.Second * 10)
 
 	rand.Seed(time.Now().UnixNano())
 	for range cron(ctx, startTime, delay) {
