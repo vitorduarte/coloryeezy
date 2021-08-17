@@ -19,6 +19,8 @@ Create a `.env` file with the following parameters
 | `ACCESS_TOKEN`        | Access Token of Twitter API        |
 | `ACCESS_TOKEN_SECRET` | Access Token Secret of Twitter API |
 
+## Config
+
 This project could be used to paint other images too. You just need to modify the configuration file `./config.json`. Its structure has the following properties:
 
 - template: The path of the template file that will be painted.
