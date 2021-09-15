@@ -1,6 +1,10 @@
 # coloryeezy 🎨👟
 
-A twitter bot that generate random colorways for Mr. West's sneakers and post it each hour.
+![](https://media-exp1.licdn.com/dms/image/C4E22AQGTmGycnag__A/feedshare-shrink_2048_1536/0/1629156813171?e=1634774400&v=beta&t=f69aHRAW071bI1OhMFc8WieavOm1aqQrxNWlHuRRa-s)
+
+The ColorYeezy project is a bot that generate random colorways for Mr. West's sneakers. We post the results every hour on [Twitter](https://twitter.com/coloryeezy). It's the exact opposite of what sneaker-related bots do. We don't take from the community. We're making more colorways for people to discuss and to enjoy seeing them.
+
+It's like having 24 drops a day!
 
 # Pre requisites
 
